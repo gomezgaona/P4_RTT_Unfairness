@@ -2,7 +2,7 @@ import jenkspy
 import time
 
 # Sample data
-RTTs = [0.1,3, 10, 12, 2, 50, 60, 20, 70, 83, 25, 3, 45, 90, 88, 7, 2, 3, 4]
+RTTs = [0.1, 3, 10, 12, 2, 50, 60, 20, 70, 83, 25, 3, 45, 90, 88, 7, 2, 3, 4]
 
 
 def Jenks_classifier(RTT_flows):
@@ -15,7 +15,7 @@ def Jenks_classifier(RTT_flows):
 
 RTT_list = []
 limits = [0, 20, 40, 60, 80]
-for i in range(0, len(RTTs) ):
+for i in range(0, len(RTTs)):
     print("New RTT: ", RTTs[i], "ms")
     
     RTT_list.append(RTTs[i])
