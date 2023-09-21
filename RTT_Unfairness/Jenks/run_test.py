@@ -9,42 +9,20 @@ import threading
 import time
 import sys
 
-def run_iperf_test(host, flow, dst_IP, duration, cc, BDP, i):
-    
-    cmd = f'{host} iperf3 -c {dst_IP} -t {duration}  -C {cc} -J > json_files/h{flow}_{cc}_{BDP}BDP_out_{i}.json &'
-    os.system(cmd)
-
-def change_BDP(BDP):
-    btlbw = 1e9
-    delay = 20e-3
-    burst = int(btlbw/250/8)
-    limit = int(BDP*btlbw*delay*(1.024**2)/8) # Setting the limit to BDP
-    sys.stdout.write(f"\rCurrent BDP: {BDP}\n" )
-
-    tbf_cmd = f'tc qdisc change dev s1-eth1 parent 1: handle 2: tbf rate {btlbw} burst {burst} limit {limit}'
-    os.system(tbf_cmd)
-
 def main():
-    h = '/home/admin/mininet/util/m h'
+    h = '/home/gomezgaj/mininet/util/m  h'
     os.system('sudo ovs-vsctl add-port s3 ens192')
-    #os.system('sudo ovs-vsctl add-port s2 ens192')
-    '''
-    for i in range(1, Runs + 1):
-        for bdp in BDP:
 
-            change_BDP(bdp)
+    num_hosts = 100
+
+    for i in range(1, int(num_hosts)):
+        os.system(f'{h}{i} ip route add 20.0.0.0/24 via 10.0.0.254  &> /dev/null')
+
+    time.sleep(2)
+    for i in range(1, 11): #int(num_hosts)
+        cmd = f'{h}{i} iperf3 -c 20.0.0.{i} -t 120 -J -C cubic -P 8 > jenks_results/out{i}.json &'
+        os.system(cmd)
+        #time.sleep(1)
         
-            flow = 1
-            run_iperf_test(f"{h}{flow}", flow, f"10.0.1.{flow}", duration, "cubic", bdp, i)
-            flow = 2
-            run_iperf_test(f"{h}{flow}", flow, f"10.0.1.{flow}", duration, "bbr", bdp, i)
-
-            time.sleep(duration + 3)
-
-    sys.stdout.write("\rTest is done\n")
-    '''
 if __name__ == '__main__':
     main()
-
-    
-    

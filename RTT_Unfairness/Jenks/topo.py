@@ -20,7 +20,7 @@ def start_mininet_hosts(num_hosts, buffer_size):
     net.addLink(s1, s3)
     net.addLink(s2, s3)
     # Start hosts and connect them to the switch
-    for i in range(1, int(num_hosts/2)):
+    for i in range(1, int(num_hosts/2) + 1):
         h = net.addHost(f'h{i}', ip=f'10.0.0.{i}/24')
         net.addLink(h, s1)
     
@@ -40,27 +40,7 @@ def start_mininet_hosts(num_hosts, buffer_size):
     # Start the network
     net.start()
     print("Starting the network")
-    '''
-    # Setting the Delay and Limiting the Bottleneck Bandwidth
-    burst = int(btlbw/250/8)
-    limit = int(btlbw*delay*(1.024**2)/8) # Setting the limit to BDP
-    print(limit)
-    netem_cmd_s1 = f'tc qdisc add dev s1-eth1 root handle 1: netem delay {delay}s loss 0.025%'
-    tbf_cmd = f'tc qdisc add dev s1-eth1 parent 1: handle 2: tbf rate {btlbw} burst {burst} limit {limit}'
-    netem_cmd_s2 = f'tc qdisc add dev s2-eth1 root handle 1: netem delay {delay}s'
     
-    os.system(netem_cmd_s1)
-    os.system(netem_cmd_s2)
-    print(f"Setting the delay to {2*delay} seconds")
-    os.system(tbf_cmd)
-    print(f"Limiting the bottleneck bandwidth to {btlbw} bps")
-    
-    # Starting iperf3 servers
-    for i in range(1, num_hosts + 1):
-         hr = net[f'hr{i}']
-         hr.cmd('iperf3 -s &> /dev/null&')
-    print("Starting iperf3 server on the receivers (hr)")
-    '''
     # Open the Mininet CLI
     net.interact()
     
