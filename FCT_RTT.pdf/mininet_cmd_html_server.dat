@@ -1,0 +1,5 @@
+ 
+ # This must be executed in the receiver
+ h1 python3 -m http.server 80 -d /var/www/html/
+ tcptrace --csv -lr large_buffer.pcap > long.csv
+ tcptrace --csv -lr short_buffer.pcap > short.csv
